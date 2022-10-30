@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minetflix  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minetflix
+  template:
+    metadata:
+      labels:
+        app: minetflix
+    spec:
+      containers:
+      - name: minetflix
+        image: wlopezob/minetflix:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minetflix  
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: minetflix
