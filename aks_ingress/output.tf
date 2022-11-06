@@ -6,6 +6,10 @@ output "container_registry" {
   value = azurerm_container_registry.acr.login_server
 }
 
+output "acr_login_user" {
+  value = azurerm_container_registry.acr.admin_username
+}
+
 output "asks_name" {
   value = azurerm_kubernetes_cluster.aks.name
 }

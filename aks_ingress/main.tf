@@ -34,6 +34,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   http_application_routing_enabled = false
 }
 
+resource "azurerm_role_assignment" "role_acrpull" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity.0.object_id
+}
+
 # Create public IPs
 resource "azurerm_public_ip" "public_ip" {
   name                =  "${var.project_name_prefix}-publicip"
