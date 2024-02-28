@@ -1,0 +1,42 @@
+namespace: botfriend
+env: dev
+image:
+  imageRegistry: {{REPOSITORY}}
+  tag: {{version}}
+  port: 80
+
+#general envs
+envs:
+  - name: SERVER_PORT
+    value: 80
+  - name: SPRING_CLOUD_CONFIG_URI
+    value: {{SPRING_CLOUD_CONFIG_URI}}
+  - name: SPRING_CLOUD_CONFIG_USERNAME
+    value: {{SPRING_CLOUD_CONFIG_USERNAME}}
+  - name: SPRING_CLOUD_CONFIG_PASSWORD
+    value: {{SPRING_CLOUD_CONFIG_PASSWORD}}
+  - name: SPRING_CLOUD_CONFIG_PASSWORD
+    value: {{SPRING_CLOUD_CONFIG_PASSWORD}}
+  - name: SPRING_PROFILES_ACTIVE
+    value: local
+
+deployment:
+  replicaCount: 1
+  imagePullSecretsName: docker-cfg
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+ingress:
+  path: /ux/botfriend/v1
+  targetPath: /ux/botfriend/v1
+  port: 80
+  tls:
+    clusterIssuer: letsencrypt-prod
+    host: whatsapp.botfriendia.com
+    secretName: whatsapp-kubernetes-tls
+resources_plan:
+  cpu_limits: 0.5
+  cpu_requests: 40m
+  memory_limits: 2048M
+  memory_requests: 1024M

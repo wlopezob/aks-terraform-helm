@@ -1,0 +1,37 @@
+{{- if  $.Values.ingress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Values.namespace | default "default" }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: {{ $.Values.ingress.targetPath | default }}/$2
+    {{- if  $.Values.ingress.tls }}
+    cert-manager.io/cluster-issuer: {{ $.Values.ingress.tls.clusterIssuer }}
+    {{- end }}
+spec:
+  {{- if  $.Values.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ $.Values.ingress.tls.host }}
+    secretName: {{ $.Values.ingress.tls.secretName }}
+  {{- end }}
+  ingressClassName: nginx
+  rules:
+  {{- if  $.Values.ingress.tls }}
+  - host: {{ $.Values.ingress.tls.host }}
+    http:
+  {{- else }}
+  - http:
+  {{- end }}
+      paths:
+      - path: {{ $.Values.ingress.path | default }}(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ $.Release.Name }}
+            port:
+              number: {{ $.Values.ingress.port | default 80 }}
+{{- end }}

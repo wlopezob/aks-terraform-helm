@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Values.namespace | default "default" }}
+spec:
+  type: {{ $.Values.service.type | default "ClusterIP" }}
+  ports:
+  - port: {{ $.Values.service.port | default 80 }}
+    targetPort: {{ $.Values.service.targetPort | default 80 }}
+  selector:
+    {{- include "k8s.labels" . | indent 4 }}

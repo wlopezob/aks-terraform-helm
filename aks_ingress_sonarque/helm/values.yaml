@@ -1,0 +1,39 @@
+namespace: frutaliza
+env: dev
+image:
+  imageRegistry: pjfruacr.azurecr.io
+  tag: 0.0.1
+  port: 8889
+
+#general envs
+# envs:
+#   - name: JAVA_OPTS
+#     value: "-Djava.awt.headless=true,-Xms768m,-Xmx768m,-XX:+UseG1GC,-XX:+DisableExplicitGC,-XshowSettings:properties,-XX:+UnlockExperimentalVMOptions,-XX:+UseCGroupMemoryLimitForHeap,-XX:MaxRAMFraction=1"
+#   - name: SPRING_CLOUD_CONFIG_LABEL
+#     value: "master"
+#   - name: SPRING_PROFILES_ACTIVE
+#     value: dev
+
+deployment:
+  replicaCount: 2
+  # imagePullSecretsName: '' #secret docker login
+  #labels:
+    #action: custom
+    #demo: demo01
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8889
+# ingress:
+#   path: /appconfig
+#   targetPath: /appconfig
+#   port: 80
+#   tls:
+#     clusterIssuer: letsencrypt-prod 
+#     host: whatsapp.botfriendia.com
+#     secretName: hello-kubernetes-tls
+# resources_plan:
+#   cpu_limits: 0.5
+#   cpu_requests: 40m
+#   memory_limits: 2048M
+#   memory_requests: 1024M

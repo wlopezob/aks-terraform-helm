@@ -1,0 +1,42 @@
+{{- with .Values.deployment }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Values.namespace | default "default" }}
+{{- end }}
+  labels:
+    {{- include "k8s.labels" . | indent 3 }}
+spec:
+  replicas: {{ $.Values.deployment.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "k8s.labels" . | indent 5 }}
+  template:
+    metadata:
+      labels:
+        {{- include "k8s.labels" . | indent 7 }}
+    spec:
+      containers:
+        - name: {{ $.Release.Name }}
+          imagePullPolicy: Always
+          image: {{ $.Values.image.imageRegistry }}/{{ $.Release.Name }}:{{ $.Values.image.tag }}
+          ports:
+          - containerPort: {{ $.Values.image.port | default 80 }}
+          envFrom:
+          - configMapRef:
+              name: {{.Release.Name}}
+      {{- if  $.Values.resources_plan }}    
+          resources:
+            limits:
+              cpu: {{ $.Values.resources_plan.cpu_limits | quote}}
+              memory: {{ $.Values.resources_plan.memory_limits | quote}}
+            requests:
+              cpu: {{ $.Values.resources_plan.cpu_requests | quote}}
+              memory: {{ $.Values.resources_plan.memory_requests | quote}}
+      {{- end }}
+      {{- if  $.Values.deployment.imagePullSecretsName }}
+      imagePullSecrets:
+        - name: {{ $.Values.deployment.imagePullSecretsName }}
+      {{- end }}
+      
